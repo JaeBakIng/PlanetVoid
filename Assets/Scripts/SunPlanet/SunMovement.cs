@@ -15,7 +15,9 @@ public class SunMovement : MonoBehaviour
         if (rb != null)
         {
             // 공의 초기 속도 설정 (2D에서 x, y 속도를 설정)
-            rb.linearVelocity = new Vector2(initialSpeed, 0); // x축 방향으로 초기 속도 설정
+            Vector2 randomDir = Random.insideUnitCircle.normalized;
+            rb.linearVelocity = randomDir * initialSpeed;
+
             currVel = rb.linearVelocity;
         }
         else
@@ -26,7 +28,7 @@ public class SunMovement : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.collider.CompareTag("wall") || collision.collider.CompareTag("sun"))
+        if (collision.collider.CompareTag("wall") || collision.collider.CompareTag("sun") || collision.collider.CompareTag("WaveOb"))
         {
             
             // 충돌한 벽의 법선 벡터를 가져옴
