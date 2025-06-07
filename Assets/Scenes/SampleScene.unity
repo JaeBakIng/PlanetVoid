@@ -1209,7 +1209,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waveObPlanetPrefab: {fileID: 4181593235005605400, guid: f439187a2a09b3d4d8ef6e02e4748eca, type: 3}
-  spawnInterval: 4
+  spawnInterval: 3
 --- !u!4 &1579211119
 Transform:
   m_ObjectHideFlags: 0

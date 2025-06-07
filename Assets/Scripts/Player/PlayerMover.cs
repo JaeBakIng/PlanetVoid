@@ -4,7 +4,8 @@ using UnityEngine;
 public class PlayerMover : MonoBehaviour
 {
 
-    [SerializeField] private SunSpawner spawner;
+    [SerializeField] 
+    private SunSpawner spawner;
 
     public float speed = 5f; // 이동 속도
 
@@ -42,60 +43,61 @@ public class PlayerMover : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("sun"))
+        if (collision.gameObject.CompareTag("sun") || collision.gameObject.CompareTag("WaveOb"))
         {
+            // 1. Spawner 중지
+            GameObject.Find("Sun")?.GetComponent<SunSpawner>()?.StopSpawning();
+            GameObject.Find("WaveSpawner")?.GetComponent<WaveObPlanetSpawner>()?.StopSpawning();
+            
 
-            GameObject spawnerObj = GameObject.Find("Sun");
-
-            if (spawnerObj != null)
+            // 2. 충돌한 WaveOb 본인에게도 중력 적용
+            if (collision.gameObject.CompareTag("WaveOb"))
             {
-                // SunSpawner 스크립트 컴포넌트 가져오기
-                SunSpawner spawner = spawnerObj.GetComponent<SunSpawner>();
-                if (spawner != null)
+                Rigidbody2D wrb = collision.gameObject.GetComponent<Rigidbody2D>();
+                Collider2D wcl = collision.gameObject.GetComponent<Collider2D>();
+
+                if (wrb != null)
                 {
-                    spawner.StopSpawning(); // StopSpawning() 호출
-                    Debug.Log("공 생성 멈춤");
+                    wrb.gravityScale = 2f;
+                    wrb.linearVelocity = Vector2.zero;
+                    wrb.angularVelocity = 0f;
                 }
-                else
-                {
-                    Debug.LogError("SunSpawner 컴포넌트를 찾지 못했습니다.");
-                }
-            }
-            else
-            {
-                Debug.LogError("SunSpawner 오브젝트를 찾지 못했습니다.");
-            }
 
-            characterRb.gravityScale = 2f;
-
-
-
-
-
-
-            /// sun 오브젝트에 중력 발동
-            Debug.Log("적 공에 부딪힘! 중력 발동");
-            GameObject[] allBalls = GameObject.FindGameObjectsWithTag("sun");
-            foreach (GameObject ball in allBalls)
-            {
-                Rigidbody2D rb = ball.GetComponent<Rigidbody2D>();
-                Collider2D cl = ball.GetComponent<Collider2D>();
-                if (rb != null)
-                {
-                    rb.gravityScale = 2f; // 떨어지게 만듦
-                    cl.isTrigger = true;
-                }
+                if (wcl != null)
+                    wcl.isTrigger = true;
             }
 
+            // 3. 기존 sun + wave 오브젝트 중력 적용
+            foreach (GameObject sun in GameObject.FindGameObjectsWithTag("sun"))
+            {
+                Rigidbody2D rb = sun.GetComponent<Rigidbody2D>();
+                Collider2D cl = sun.GetComponent<Collider2D>();
+                if (rb != null) rb.gravityScale = 2f;
+                if (cl != null) cl.isTrigger = true;
+            }
+
+            foreach (GameObject wave in GameObject.FindGameObjectsWithTag("WaveOb"))
+            {
+                WaveObPlanet planetScript = wave.GetComponent<WaveObPlanet>();
+                if (planetScript != null)
+                {
+                    planetScript.ApplyGravityAndStop();  // ✅ 내부에서 gravityScale = 2f + isStopped = true 처리
+                }
+
+                Rigidbody2D wrb = wave.GetComponent<Rigidbody2D>();
+                Collider2D wcl = wave.GetComponent<Collider2D>();
+                if (wrb != null) wrb.gravityScale = 2f;
+                if (wcl != null) wcl.isTrigger = true;
+            }
+
+            // 4. 플레이어 정지
             characterRb.linearVelocity = Vector2.zero;
             characterRb.gravityScale = 2f;
             characterCl.isTrigger = true;
-            this.enabled = false;  // 움직임 스크립트 비활성화
+            this.enabled = false;
 
+            Debug.Log("💥 충돌: WaveOb 중력 적용 및 전체 정지 완료");
         }
-
-        
     }
 
-    
 }
