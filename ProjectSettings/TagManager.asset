@@ -7,16 +7,17 @@ TagManager:
   - wall
   - sun
   - WaveOb
+  - Meteor
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - WaveEnemy
   - Water
   - UI
-  - 
-  - 
-  - 
+  - Map
+  - Meteor
+  - sun
   - 
   - 
   - 

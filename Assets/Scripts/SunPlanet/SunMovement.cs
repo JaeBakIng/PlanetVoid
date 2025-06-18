@@ -28,7 +28,7 @@ public class SunMovement : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.collider.CompareTag("wall") || collision.collider.CompareTag("sun") || collision.collider.CompareTag("WaveOb"))
+        if (collision.collider.CompareTag("wall") || collision.collider.CompareTag("sun") || collision.collider.CompareTag("WaveOb") || collision.collider.CompareTag("Meteor"))
         {
             
             // 충돌한 벽의 법선 벡터를 가져옴
@@ -39,8 +39,6 @@ public class SunMovement : MonoBehaviour
 
             // 법선 벡터를 사용하여 반사 벡터를 계산
             Vector2 reflectedVelocity = incomingVelocity - 2 * Vector2.Dot(incomingVelocity, normal) * normal;
-
-            
 
             // 반사된 속도 적용 (반대 방향으로 튕겨나가게 설정)
             rb.linearVelocity = reflectedVelocity;

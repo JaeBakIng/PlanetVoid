@@ -43,12 +43,13 @@ public class PlayerMover : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("sun") || collision.gameObject.CompareTag("WaveOb"))
+        if (collision.gameObject.CompareTag("sun") || collision.gameObject.CompareTag("WaveOb") || collision.gameObject.CompareTag("Meteor"))
         {
             // 1. Spawner 중지
             GameObject.Find("Sun")?.GetComponent<SunSpawner>()?.StopSpawning();
             GameObject.Find("WaveSpawner")?.GetComponent<WaveObPlanetSpawner>()?.StopSpawning();
-            
+            GameObject.Find("MeteorSpawner")?.GetComponent<MeteorSpawner>()?.StopSpawning();
+
 
             // 2. 충돌한 WaveOb 본인에게도 중력 적용
             if (collision.gameObject.CompareTag("WaveOb"))
@@ -76,6 +77,7 @@ public class PlayerMover : MonoBehaviour
                 if (cl != null) cl.isTrigger = true;
             }
 
+
             foreach (GameObject wave in GameObject.FindGameObjectsWithTag("WaveOb"))
             {
                 WaveObPlanet planetScript = wave.GetComponent<WaveObPlanet>();
@@ -89,6 +91,16 @@ public class PlayerMover : MonoBehaviour
                 if (wrb != null) wrb.gravityScale = 2f;
                 if (wcl != null) wcl.isTrigger = true;
             }
+
+            foreach (GameObject meteor in GameObject.FindGameObjectsWithTag("Meteor"))
+            {
+                Rigidbody2D rb = meteor.GetComponent<Rigidbody2D>();
+                Collider2D cl = meteor.GetComponent<Collider2D>();
+                if (rb != null) rb.gravityScale = 2f;
+                if (cl != null) cl.isTrigger = true;
+            }
+
+
 
             // 4. 플레이어 정지
             characterRb.linearVelocity = Vector2.zero;

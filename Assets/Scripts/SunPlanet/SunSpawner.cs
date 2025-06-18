@@ -50,10 +50,7 @@ public class SunSpawner : MonoBehaviour , EnemyInterface
         // 무한 루프가 아니라 한 번만 실행되도록 설정
         while (true)
         {
-
             // 일정 시간 대기
-            
-          
             yield return new WaitForSeconds(spawnInterval);
             // 공 생성
             Spawn();
@@ -63,11 +60,6 @@ public class SunSpawner : MonoBehaviour , EnemyInterface
     public void Spawn()
     {
         //// 중심에서 랜덤 방향 + 거리 (원형 범위 내)
-        //Vector2 randomOffset = UnityEngine.Random.insideUnitCircle * spawnRadius;
-        //Vector3 spawnPosition = transform.position + new Vector3(randomOffset.x, randomOffset.y, 0f);
-
-        //Instantiate(sunPrefab, spawnPosition, Quaternion.identity);
-        //Debug.Log($"🌞 Sun 생성됨 at {spawnPosition}");
         int maxAttempts = 30;
         for (int i = 0; i < maxAttempts; i++)
         {
@@ -83,11 +75,6 @@ public class SunSpawner : MonoBehaviour , EnemyInterface
                 return;
             }
         }
-
         Debug.LogWarning("⚠️ 적절한 위치를 찾지 못해 Sun 생성 실패");
-
-
     }
-    
-    
 }
